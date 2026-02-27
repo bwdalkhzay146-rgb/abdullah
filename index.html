@@ -1,219 +1,259 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>عـبـدالـلـه الـخـزاعـي | Neon Vibe</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حجزي - منصة حجز ملاعب الديوانية</title>
+    <style>
+        /* ألوان وتنسيقات الموقع */
+        :root {
+            --primary-color: #2ecc71;
+            --secondary-color: #27ae60;
+            --dark-color: #1a1a1a;
+            --light-bg: #f4f7f6;
+            --white: #ffffff;
+        }
 
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
 
-body{
-font-family:Tahoma;
-background:#0b0b0f;
-color:white;
-text-align:center;
-overflow-x:hidden;
-}
+        /* الهيدر */
+        header {
+            background-color: var(--dark-color);
+            color: var(--white);
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--primary-color);
+        }
 
-header{
-padding:60px 20px;
-position:relative;
-overflow:hidden;
-}
+        header h1 { margin: 0; font-size: 2.5rem; }
+        header p { margin: 10px 0 0; opacity: 0.8; }
 
-.neon-bg{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;ackground:linear-gradient(45deg, #6a0dad, #1e90ff, #ff69b4, #9400d3);
-background-size:400% 400%;
-animation: neonMove 15s ease infinite;
-z-index:0;
-opacity:0.15;
-}
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 15px;
+        }
 
-.neon-lines{
-position:absolute;
-top:0;
-left:0;
-width:200%;
-height:200%;ackground:repeating-linear-gradient(
-45deg,
-rgba(255,255,255,0.03),
-rgba(255,255,255,0.03) 2px,
-transparent 2px,
-transparent 20px
-);
-animation: linesMove 20s linear infinite;
-z-index:0;
-opacity:0.1;
-}
+        /* كارت الملعب */
+        .stadium-card {
+            background: var(--white);
+            border-radius: 20px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
 
-@keyframes neonMove{
-0%{background-position:0% 50%;}
-50%{background-position:100% 50%;}
-100%{background-position:0% 50%;}
-}
+        .stadium-card:hover { transform: translateY(-5px); }
 
-@keyframes linesMove{
-0%{transform:translate(-50%,-50%) rotate(0deg);}
-100%{transform:translate(-50%,-50%) rotate(360deg);}
-}
+        .stadium-info { padding: 20px; }
+        .stadium-info h3 { margin: 0 0 10px; font-size: 1.4rem; color: var(--dark-color); }
+        .stadium-info p { margin: 5px 0; color: #666; }
 
-h1{
-font-size:30px;
-letter-spacing:2px;
-color:#1e90ff;
-position:relative;
-z-index:1;
-}
+        .price-tag {
+            display: inline-block;
+            background: #e8f5e9;
+            color: var(--secondary-color);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
 
-.tag{
-color:#ff69b4;
-margin-top:10px;
-font-size:14px;
-position:relative;
-z-index:1;
-}
+        /* الأزرار */
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
 
-.section{
-padding:40px 20px;
-position:relative;
-z-index:1;
-}
+        .btn-book {
+            flex: 2;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+        }
 
-.card{
-background:#14141c;
-margin:20px auto;
-padding:25px;
-border-radius:15px;
-width:90%;
-box-shadow:0 0 20px rgba(0,245,255,0.15);
-transition:0.3s;
-}
+        .btn-details {
+            flex: 1;
+            background-color: #f0f0f0;
+            color: #333;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
-.card:hover{
-transform:translateY(-5px);
-box-shadow:0 0 25px rgba(255,105,180,0.4);
-}
+        /* قسم التفاصيل والخريطة */
+        .details-content {
+            display: none;
+            padding: 20px;
+            background: #fdfdfd;
+            border-top: 1px solid #eee;
+        }
 
-h2{
-color:#1e90ff;
-margin-bottom:15px;
-}
+        /* نافذة الحجز */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+        }
 
-ul{
-list-style:none;
-text-align:right;
-padding:0;
-}
+        .modal-content {
+            background: white;
+            margin: 15% auto;
+            padding: 25px;
+            width: 85%;
+            max-width: 400px;
+            border-radius: 20px;
+            text-align: right;
+        }
 
-ul li{
-padding:8px 0;
-font-size:14px;
-color:#ccc;
-position:relative;
-}
+        input, select {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
 
-ul li::before{
-content:"⚡";
-color:#ff69b4;
-margin-left:10px;
-}
+        /* الفوتر */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 50px;
+        }
 
-.button-container{
-display:flex;
-justify-content:center;
-flex-wrap:wrap;
-gap:20px;
-}
+        .copyright {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: 15px;
+            display: block;
+        }
 
-button{
-background:#ff69b4;
-border:none;
-padding:12px 30px;
-color:white;
-border-radius:30px;
-font-size:16px;
-cursor:pointer;
-transition:0.3s, box-shadow 0.5s;
-box-shadow: 0 0 10px #ff69b4, 0 0 20px #ff69b4, 0 0 30px #ff69b4;
-animation: neonGlow 1.5s ease-in-out infinite alternate;
-}
-
-button:hover{
-background:#ff1493;
-transform:scale(1.05);
-box-shadow: 0 0 15px #ff1493, 0 0 25px #ff1493, 0 0 40px #ff1493;
-}
-
-@keyframes neonGlow{
-0%{box-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4, 0 0 15px #ff69b4;}
-50%{box-shadow: 0 0 15px #ff69b4, 0 0 25px #ff69b4, 0 0 35px #ff69b4;}
-100%{box-shadow: 0 0 5px #ff69b4, 0 0 10px #ff69b4, 0 0 15px #ff69b4;}
-}
-
-footer{
-margin-top:40px;
-padding:20px;
-font-size:13px;
-color:#777;
-position:relative;
-z-index:1;
-}
-</style>
+        iframe { border-radius: 12px; margin-top: 10px; }
+    </style>
 </head>
-
 <body>
 
 <header>
-<div class="neon-bg"></div>
-<div class="neon-lines"></div>
-<h1>عـبـدالـلـه الـخـزاعـي</h1>
-<p class="tag">طالب علمي | لاعب كرة قدم | أطور نفسي كل يوم</p>
+    <h1>⚽ حـجـزي</h1>
+    <p>تطبيق حجز الملاعب - الديوانية</p>
 </header>
 
-<div class="section">
+<div class="container">
+    
+    <div class="stadium-card">
+        <div class="stadium-info">
+            <h3>خماسي الظلال (الضلال)</h3>
+            <p>📍 الموقع: الديوانية - حي الفرات</p>
+            <div class="price-tag">السعر: 15,000 د.ع / ساعة</div>
+            <div class="btn-group">
+                <button class="btn-book" onclick="openBooking('ملعب الضلال')">احجز الآن</button>
+                <button class="btn-details" onclick="toggleDetails('details-dhalal')">الموقع والتفاصيل 🔽</button>
+            </div>
+        </div>
+        <div id="details-dhalal" class="details-content">
+            <p><strong>عن الملعب:</strong> أرضية تارتان، إضاءة ليلية متوفرة، مواقف سيارات.</p>
+            <iframe width="100%" height="200" frameborder="0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3408.824147385207!2d44.9272!3d31.9998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzHCsDU5JzU5LjMiTiA0NMKwNTUnMzcuOSJF!5e0!3m2!1sar!2siq!4v1620000000000"></iframe>
+        </div>
+    </div>
 
-<div class="card">
-<h2>عن عـبـدالـلـه الـخـزاعـي</h2>
-<ul>
-<li>طالب علمي متفوق ومحب للتعلم.</li>
-<li>لاعب كرة قدم ذو روح قيادية ومنافسة عالية.</li>
-<li>أحب تحدي نفسي وتحسين مهاراتي باستمرار.</li>
-<li>أعتمد على الانضباط والعمل الجاد للوصول لهدفي.</li>
-<li>مهتم بالبرمجة وتطوير مهاراتي الرقمية.</li>
-</ul>
+    <div class="stadium-card">
+        <div class="stadium-info">
+            <h3>ملعب خماسي الجزائر</h3>
+            <p>📍 الموقع: الديوانية - شارع الجزائر</p>
+            <div class="price-tag">السعر: 15,000 د.ع / ساعة</div>
+            <div class="btn-group">
+                <button class="btn-book" onclick="openBooking('ملعب خماسي الجزائر')">احجز الآن</button>
+                <button class="btn-details" onclick="toggleDetails('details-algeria')">الموقع والتفاصيل 🔽</button>
+            </div>
+        </div>
+        <div id="details-algeria" class="details-content">
+            <iframe width="100%" height="200" frameborder="0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3409.5!2d44.9055!3d31.9864!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzHCsDU5JzExLjAiTiA0NMKwNTQnMjAuMCJF!5e0!3m2!1sar!2siq!4v1620000000000"></iframe>
+        </div>
+    </div>
+
 </div>
 
-<div class="card">
-<h2>تواصل معي</h2>
-<div class="button-container">
-<button onclick="window.open('https://www.facebook.com/share/1CJNDrwkSv/','_blank')">
-فيس بوك
-</button>
-
-<button onclick="window.open('https://www.instagram.com/a20o7k?igsh=a21kanZocTdhdjQx','_blank')">
-إنستغرام
-</button>
-
-<button onclick="window.open('https://t.me/abood_20077','_blank')">
-تليجرام
-</button>
-</div>
-</div>
-
+<div id="bookingModal" class="modal">
+    <div class="modal-content">
+        <h3 id="stadiumNameHeader">حجز ملعب</h3>
+        <label>اسم الكابتن:</label>
+        <input type="text" id="playerName" placeholder="اكتب اسمك هنا">
+        <label>اختر اليوم:</label>
+        <select id="bookingDay">
+            <option>اليوم</option>
+            <option>غداً</option>
+            <option>بعد غد</option>
+        </select>
+        <label>وقت الحجز:</label>
+        <input type="time" id="bookingTime">
+        <button class="btn-book" style="width:100%" onclick="confirmToWhatsApp()");">إرسال الطلب عبر واتساب 💬</button>
+        <button onclick="closeBooking()" style="width:100%; background:none; border:none; margin-top:15px; color:red; cursor:pointer; font-weight:bold;">إلغاء</button>
+    </div>
 </div>
 
 <footer>
-© 2026 عـبـدالـلـه الـخـزاعـي | Neon Vibe
+    <p>جميع الحقوق محفوظة لموقع حجزي © 2026</p>
+    <span class="copyright">حقوق الملكية محفوظة لدى عـبـدالـلـه الـخـزاعـي</span>
 </footer>
+
+<script>
+    let currentStadium = "";
+
+    // وظيفة إظهار وإخفاء التفاصيل
+    function toggleDetails(id) {
+        let el = document.getElementById(id);
+        el.style.display = (el.style.display === "block") ? "none" : "block";
+    }
+
+    // فتح نافذة الحجز
+    function openBooking(name) {
+        currentStadium = name;
+        document.getElementById('stadiumNameHeader').innerText = "حجز في " + name;
+        document.getElementById('bookingModal').style.display = "block";
+    }
+
+    // إغلاق نافذة الحجز
+    function closeBooking() {
+        document.getElementById('bookingModal').style.display = "none";
+    }
+
+    // إرسال البيانات للواتساب
+    function confirmToWhatsApp() {
+        const name = document.getElementById('playerName').value;
+        const day = document.getElementById('bookingDay').value;
+        const time = document.getElementById('bookingTime').value;
+        
+        if(!name || !time) {
+            alert("كابتن، يرجى كتابة الاسم وتحديد الوقت!");
+            return;
+        }
+
+        // ملاحظة: استبدل الرقم أدناه برقم صاحب الملعب الحقيقي
+        const phone = "9647800000000"; 
+        const message = `*طلب حجز من موقع حجزي*%0A------------------%0A*الملعب:* ${currentStadium}%0A*اسم الكابتن:* ${name}%0A*اليوم:* ${day}%0A*الساعة:* ${time}%0A*السعر:* 15,000 د.ع%0A------------------%0A*يرجى تأكيد الحجز.*`;
+        
+        window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+        closeBooking();
+    }
+</script>
 
 </body>
 </html>
