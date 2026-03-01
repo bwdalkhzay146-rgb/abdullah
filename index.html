@@ -3,257 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حجزي - منصة حجز ملاعب الديوانية</title>
+    
+    <title>حجزي - ملاعب الديوانية | المطور عبد الله الخزاعي</title>
+    <meta name="description" content="منصة حجزي برعاية عبد الله الخزاعي. احجز أفضل ملاعب الخماسي في الديوانية (الضلال، الجزائر، النجمة) بضغطة زر واحدة.">
+    <meta name="keywords" content="حجزي, حجز ملاعب الديوانية, ملعب الضلال, حي الجمعية, عبد الله الخزاعي, تطبيق حجزي">
+    <meta name="author" content="عبد الله الخزاعي">
+
     <style>
-        /* ألوان وتنسيقات الموقع */
-        :root {
-            --primary-color: #2ecc71;
-            --secondary-color: #27ae60;
-            --dark-color: #1a1a1a;
-            --light-bg: #f4f7f6;
-            --white: #ffffff;
-        }
+        :root { --main-green: #27ae60; --dark-blue: #2c3e50; --bg-gray: #f8f9fa; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-gray); margin: 0; padding: 0; color: #333; }
+        
+        header { background: var(--dark-blue); color: white; padding: 30px 20px; text-align: center; border-bottom: 5px solid var(--main-green); border-radius: 0 0 25px 25px; }
+        .container { max-width: 500px; margin: auto; padding: 15px; }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--light-bg);
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
+        /* البطاقة التعريفية */
+        .id-card { background: linear-gradient(45deg, #1a1a1a, #27ae60); color: white; padding: 20px; border-radius: 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); margin-top: -30px; position: relative; }
+        .id-card .avatar { font-size: 45px; background: white; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border: 3px solid #fff; }
+        
+        /* قسم التعريف والفيسبوك */
+        .info-card { background: white; padding: 20px; border-radius: 20px; margin-top: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .fb-btn { background: #1877F2; color: white; padding: 12px; border-radius: 12px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: bold; margin-top: 15px; transition: 0.3s; }
+        .fb-btn:hover { transform: scale(1.02); background: #145dbf; }
 
-        /* الهيدر */
-        header {
-            background-color: var(--dark-color);
-            color: var(--white);
-            padding: 30px 20px;
-            text-align: center;
-            border-bottom: 5px solid var(--primary-color);
-        }
-
-        header h1 { margin: 0; font-size: 2.5rem; }
-        header p { margin: 10px 0 0; opacity: 0.8; }
-
-        .container {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 15px;
-        }
-
-        /* كارت الملعب */
-        .stadium-card {
-            background: var(--white);
-            border-radius: 20px;
-            margin-bottom: 25px;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            transition: 0.3s;
-        }
-
-        .stadium-card:hover { transform: translateY(-5px); }
-
-        .stadium-info { padding: 20px; }
-        .stadium-info h3 { margin: 0 0 10px; font-size: 1.4rem; color: var(--dark-color); }
-        .stadium-info p { margin: 5px 0; color: #666; }
-
-        .price-tag {
-            display: inline-block;
-            background: #e8f5e9;
-            color: var(--secondary-color);
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
-        /* الأزرار */
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
-
-        .btn-book {
-            flex: 2;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1rem;
-        }
-
-        .btn-details {
-            flex: 1;
-            background-color: #f0f0f0;
-            color: #333;
-            border: none;
-            padding: 15px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        /* قسم التفاصيل والخريطة */
-        .details-content {
-            display: none;
-            padding: 20px;
-            background: #fdfdfd;
-            border-top: 1px solid #eee;
-        }
-
-        /* نافذة الحجز */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0; top: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-        }
-
-        .modal-content {
-            background: white;
-            margin: 15% auto;
-            padding: 25px;
-            width: 85%;
-            max-width: 400px;
-            border-radius: 20px;
-            text-align: right;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-
-        /* الفوتر */
-        footer {
-            background-color: var(--dark-color);
-            color: white;
-            text-align: center;
-            padding: 40px 20px;
-            margin-top: 50px;
-        }
-
-        .copyright {
-            color: var(--primary-color);
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-top: 15px;
-            display: block;
-        }
-
-        iframe { border-radius: 12px; margin-top: 10px; }
+        /* كروت الملاعب */
+        .stadium-card { background: white; border-radius: 20px; margin-top: 25px; overflow: hidden; box-shadow: 0 6px 15px rgba(0,0,0,0.08); border: 1px solid #eee; }
+        .map-box { height: 200px; background: #ddd; width: 100%; border: none; }
+        .details { padding: 15px; }
+        .price-tag { display: inline-block; background: #e8f5e9; color: #27ae60; padding: 5px 12px; border-radius: 10px; font-weight: bold; margin: 10px 0; }
+        
+        .btn-booking { display: block; width: 100%; background: var(--main-green); color: white; text-align: center; padding: 14px; border-radius: 12px; text-decoration: none; font-weight: bold; border: none; cursor: pointer; font-size: 1rem; }
+        
+        /* تعليمات */
+        .rules { background: #fff3cd; padding: 15px; border-radius: 15px; margin-top: 20px; border-right: 5px solid #ffc107; font-size: 0.85rem; }
+        
+        footer { text-align: center; padding: 30px; font-size: 0.8rem; color: #888; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>⚽ حـجـزي</h1>
-    <p>تطبيق حجز الملاعب - الديوانية</p>
+    <h1 style="margin:0">⚽ حـجـزي</h1>
+    <p style="margin:5px 0 0; opacity:0.85">ملاعب الديوانية في جيبك</p>
 </header>
 
 <div class="container">
-    
-    <div class="stadium-card">
-        <div class="stadium-info">
-            <h3>خماسي الظلال (الضلال)</h3>
-            <p>📍 الموقع: الديوانية - حي الفرات</p>
-            <div class="price-tag">السعر: 15,000 د.ع / ساعة</div>
-            <div class="btn-group">
-                <button class="btn-book" onclick="openBooking('ملعب الضلال')">احجز الآن</button>
-                <button class="btn-details" onclick="toggleDetails('details-dhalal')">الموقع والتفاصيل 🔽</button>
-            </div>
+    <div class="id-card">
+        <div class="avatar">👤</div>
+        <div>
+            <h3 style="margin:0">عبد الله الخزاعي</h3>
+            <p style="margin:5px 0; font-size:0.85rem">المطور والمدير العام - منصة حجزي</p>
+            <span style="background:#f1c40f; color:#000; padding:2px 8px; border-radius:5px; font-size:0.7rem; font-weight:bold;">مطور معتمد ✅</span>
         </div>
-        <div id="details-dhalal" class="details-content">
-            <p><strong>عن الملعب:</strong> أرضية تارتان، إضاءة ليلية متوفرة، مواقف سيارات.</p>
-            <iframe width="100%" height="200" frameborder="0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3408.824147385207!2d44.9272!3d31.9998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzHCsDU5JzU5LjMiTiA0NMKwNTUnMzcuOSJF!5e0!3m2!1sar!2siq!4v1620000000000"></iframe>
+    </div>
+
+    <div class="info-card">
+        <h4 style="margin-top:0; color:var(--main-green)">📱 ما هي منصة حجزي؟</h4>
+        <p>نحن نوفر لك عناء البحث. اختر ملعبك في الديوانية، شاهد موقعه بدقة، واحجز مباشرة عبر واتساب بسعر موحد (15,000 د.ع).</p>
+        <a href="https://www.facebook.com/abdullah.al.khuzaie.al.khuzaie" target="_blank" class="fb-btn">
+            🔵 تابعني على فيسبوك للتحديثات
+        </a>
+    </div>
+
+    <h3 style="margin: 25px 5px 10px; color: var(--dark-blue);">🏟️ الملاعب المتاحة</h3>
+
+    <div class="stadium-card">
+        <iframe class="map-box" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3408.358212188457!2d44.9255!3d31.9892!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzHCsDU5JzIxLjEiTiA0NMKwNTUnMzEuOCJF!5e0!3m2!1sar!2siq!4v1700000000000"></iframe>
+        <div class="details">
+            <h3>ملعب الضلال (الظلال)</h3>
+            <p style="margin:5px 0; font-size:0.9rem; color:#666;">📍 حي الجمعية - الديوانية</p>
+            <div class="price-tag">15,000 د.ع / ساعة</div>
+            <button class="btn-booking" onclick="sendBooking('ملعب الضلال - حي الجمعية')">احجز الآن عبر واتساب</button>
         </div>
     </div>
 
     <div class="stadium-card">
-        <div class="stadium-info">
+        <iframe class="map-box" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3408.5!2d44.91!3d31.98!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzHCsDU4JzQ4LjAiTiA0NMKwNTQnNDguMCJF!5e0!3m2!1sar!2siq!4v1700000000000"></iframe>
+        <div class="details">
             <h3>ملعب خماسي الجزائر</h3>
-            <p>📍 الموقع: الديوانية - شارع الجزائر</p>
-            <div class="price-tag">السعر: 15,000 د.ع / ساعة</div>
-            <div class="btn-group">
-                <button class="btn-book" onclick="openBooking('ملعب خماسي الجزائر')">احجز الآن</button>
-                <button class="btn-details" onclick="toggleDetails('details-algeria')">الموقع والتفاصيل 🔽</button>
-            </div>
-        </div>
-        <div id="details-algeria" class="details-content">
-            <iframe width="100%" height="200" frameborder="0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3409.5!2d44.9055!3d31.9864!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzHCsDU5JzExLjAiTiA0NMKwNTQnMjAuMCJF!5e0!3m2!1sar!2siq!4v1620000000000"></iframe>
+            <p style="margin:5px 0; font-size:0.9rem; color:#666;">📍 شارع الجزائر - الديوانية</p>
+            <div class="price-tag">15,000 د.ع / ساعة</div>
+            <button class="btn-booking" onclick="sendBooking('ملعب خماسي الجزائر')">احجز الآن عبر واتساب</button>
         </div>
     </div>
 
-</div>
-
-<div id="bookingModal" class="modal">
-    <div class="modal-content">
-        <h3 id="stadiumNameHeader">حجز ملعب</h3>
-        <label>اسم الكابتن:</label>
-        <input type="text" id="playerName" placeholder="اكتب اسمك هنا">
-        <label>اختر اليوم:</label>
-        <select id="bookingDay">
-            <option>اليوم</option>
-            <option>غداً</option>
-            <option>بعد غد</option>
-        </select>
-        <label>وقت الحجز:</label>
-        <input type="time" id="bookingTime">
-        <button class="btn-book" style="width:100%" onclick="confirmToWhatsApp()");">إرسال الطلب عبر واتساب 💬</button>
-        <button onclick="closeBooking()" style="width:100%; background:none; border:none; margin-top:15px; color:red; cursor:pointer; font-weight:bold;">إلغاء</button>
+    <div class="rules">
+        <b>📝 تعليمات الحجز:</b> الحضور قبل 10 دقائق، الإلغاء قبل ساعتين، والحفاظ على نظافة الملعب مسؤوليتنا جميعاً.
     </div>
 </div>
 
 <footer>
-    <p>جميع الحقوق محفوظة لموقع حجزي © 2026</p>
-    <span class="copyright">حقوق الملكية محفوظة لدى عـبـدالـلـه الـخـزاعـي</span>
+    <p>جميع الحقوق محفوظة للمطور عبد الله الخزاعي © 2026</p>
 </footer>
 
 <script>
-    let currentStadium = "";
-
-    // وظيفة إظهار وإخفاء التفاصيل
-    function toggleDetails(id) {
-        let el = document.getElementById(id);
-        el.style.display = (el.style.display === "block") ? "none" : "block";
-    }
-
-    // فتح نافذة الحجز
-    function openBooking(name) {
-        currentStadium = name;
-        document.getElementById('stadiumNameHeader').innerText = "حجز في " + name;
-        document.getElementById('bookingModal').style.display = "block";
-    }
-
-    // إغلاق نافذة الحجز
-    function closeBooking() {
-        document.getElementById('bookingModal').style.display = "none";
-    }
-
-    // إرسال البيانات للواتساب
-    function confirmToWhatsApp() {
-        const name = document.getElementById('playerName').value;
-        const day = document.getElementById('bookingDay').value;
-        const time = document.getElementById('bookingTime').value;
-        
-        if(!name || !time) {
-            alert("كابتن، يرجى كتابة الاسم وتحديد الوقت!");
-            return;
-        }
-
-        // ملاحظة: استبدل الرقم أدناه برقم صاحب الملعب الحقيقي
-        const phone = "9647800000000"; 
-        const message = `*طلب حجز من موقع حجزي*%0A------------------%0A*الملعب:* ${currentStadium}%0A*اسم الكابتن:* ${name}%0A*اليوم:* ${day}%0A*الساعة:* ${time}%0A*السعر:* 15,000 د.ع%0A------------------%0A*يرجى تأكيد الحجز.*`;
-        
-        window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
-        closeBooking();
+    function sendBooking(stadiumName) {
+        const myNumber = "9647800000000"; // ضَع رقمك هنا
+        const message = encodeURIComponent(`السلام عليكم كابتن عبد الله، أريد حجز موعد في (${stadiumName}) من تطبيق حجزي.`);
+        window.open(`https://wa.me/${myNumber}?text=${message}`, '_blank');
     }
 </script>
+
+<script type="text/javascript">
+var sc_project=13208010; 
+var sc_invisible=1; 
+var sc_security="0d940550"; 
+</script>
+<script type="text/javascript" src="https://www.statcounter.com/counter/counter.js" async></script>
+<noscript><div class="statcounter"><a title="Web Analytics" href="https://statcounter.com/" target="_blank"><img class="statcounter" src="https://c.statcounter.com/13208010/0/0d940550/1/" alt="Web Analytics" referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
 
 </body>
 </html>
